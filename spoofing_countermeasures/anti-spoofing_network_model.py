@@ -7,7 +7,7 @@ import os, os.path
 
 cv2dir = str(os.path.dirname(cv2.__file__))
 face_cascade_path = f"{cv2dir}/data/haarcascade_frontalface_default.xml"
-model_path = "C:/Users/rasmu/Desktop/face_recog_project/spoofing_countermeasures/trained_models/replay_attack_trained_models/replay-attack_ycrcb_luv_extraTreesClassifier.pkl"
+model_path = "C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/trained_models/replay_attack_trained_models/replay-attack_ycrcb_luv_extraTreesClassifier.pkl"
 
 
 def detect_face(img, faceCascade):
@@ -93,7 +93,7 @@ def run_detection():
                 text = "True"
 
                 # Prediction tolerance
-                if np.mean(measures) > 0.7:
+                if np.mean(measures) > 0.5:
                     text = "False"
                     font = cv2.FONT_HERSHEY_SIMPLEX
                     cv2.putText(img=img_bgr, text=text, org=point, fontFace=font, fontScale=0.9, color=(0, 0, 255),

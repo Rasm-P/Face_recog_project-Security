@@ -8,19 +8,20 @@ import pickle
 import time
 import cv2
 import os
+import copyreg
 
 
 print("[INFO] loading face detector...")
-protoPath = "C:/Users/rasmu/Desktop/face_recog_project/spoofing_countermeasures/face_detector/deploy.prototxt"
-modelPath = "C:/Users/rasmu/Desktop/face_recog_project/spoofing_countermeasures/face_detector/res10_300x300_ssd_iter_140000.caffemodel"
+protoPath = "C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/face_detector/deploy.prototxt"
+modelPath = "C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/face_detector/res10_300x300_ssd_iter_140000.caffemodel"
 net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 
 
 def liveliness_detector():
 
     print("[INFO] loading liveness detector...")
-    model = load_model("C:/Users/rasmu/Desktop/face_recog_project/spoofing_countermeasures/liveness/liveness.model")
-    le = pickle.loads(open("C:/Users/rasmu/Desktop/face_recog_project/spoofing_countermeasures/liveness/le.pickle", "rb").read())
+    model = load_model("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/liveness.model")
+    le = pickle.loads(open("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/le.pickle", "rb").read())
 
     print("[INFO] starting video stream...")
     vs = VideoStream(src=0).start()
