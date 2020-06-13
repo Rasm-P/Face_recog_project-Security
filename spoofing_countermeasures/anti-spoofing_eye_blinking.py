@@ -35,6 +35,9 @@ def eye_aspect_ratio(eye):
 
 
 def run_eye_blinking():
+    global COUNTER
+    global TOTAL
+
     print("[INFO] loading facial landmark predictor...")
     detector = dlib.get_frontal_face_detector()
     predictor = dlib.shape_predictor(sixty_eight_point_model_location())

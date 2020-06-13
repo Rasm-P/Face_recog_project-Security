@@ -44,7 +44,7 @@ def liveliness_detector():
             confidence = detections[0, 0, i, 2]
 
             # Face detection confidence
-            if confidence > 0.8:
+            if confidence > 0.9:
 
                 box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
                 (startX, startY, endX, endY) = box.astype("int")
