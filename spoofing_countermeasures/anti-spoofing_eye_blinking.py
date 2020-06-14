@@ -10,13 +10,33 @@ import dlib
 import cv2
 import os
 import os.path
+import threading
 
+count = 0
+stop_thread = False
+human = False  
 
 EYE_AR_THRESH = 0.2
 EYE_AR_CONSEC_FRAMES = 3
 
 COUNTER = 0
 TOTAL = 0
+
+
+def printit():
+    global count
+    global human
+
+    thread = threading.Timer(1.0, printit)
+    thread.start()
+    count += 1
+    if TOTAL/(count/60) > 15:
+        human = True
+    else:
+        human = False
+
+    if stop_thread:
+      thread.cancel()
 
 
 def sixty_eight_point_model_location():
@@ -37,6 +57,7 @@ def eye_aspect_ratio(eye):
 def run_eye_blinking():
     global COUNTER
     global TOTAL
+    global stop_thread
 
     print("[INFO] loading facial landmark predictor...")
     detector = dlib.get_frontal_face_detector()
@@ -48,6 +69,8 @@ def run_eye_blinking():
     print("[INFO] starting video stream...")
     vs = VideoStream(src=0).start()
     time.sleep(1.0)
+
+    printit()
 
     while True:
 
@@ -86,13 +109,16 @@ def run_eye_blinking():
 
             cv2.putText(frame, "Blinks: {}".format(TOTAL), (10, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(frame, "EAR: {:.2f}".format(ear), (300, 30),
+            cv2.putText(frame, "Eye_aspect: {:.2f}".format(ear), (250, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(frame, "Human: {}".format(str(human)), (300, 60),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     
         cv2.imshow("Frame", frame)
         key = cv2.waitKey(1) & 0xFF
     
         if key == ord("q"):
+            stop_thread = True
             break
 
     cv2.destroyAllWindows()

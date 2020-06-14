@@ -25,7 +25,7 @@ def liveliness_detector():
 
     print("[INFO] starting video stream...")
     vs = VideoStream(src=0).start()
-    time.sleep(2.0)
+    time.sleep(1.0)
 
     while True:
 

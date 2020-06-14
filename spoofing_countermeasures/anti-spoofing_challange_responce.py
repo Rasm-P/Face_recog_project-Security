@@ -23,8 +23,10 @@ def execute_tracking():
     ROOT.withdraw()
 
     cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+    time.sleep(1.0)
+
     while True:
-        ret, frame=cam.read()
+        ret, frame = cam.read()
         if ret:
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             canvas = detect(gray,frame)
