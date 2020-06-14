@@ -3,6 +3,7 @@ import os, os.path
 import tkinter as tk
 from tkinter import simpledialog
 import keyboard
+import time
 
 
 cv2dir = str(os.path.dirname(cv2.__file__))
@@ -19,9 +20,6 @@ smile_cascade = cv2.CascadeClassifier(smile_cascade_path)
 
 
 def execute_tracking():   
-    ROOT = tk.Tk()
-    ROOT.withdraw()
-
     cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
     time.sleep(1.0)
 

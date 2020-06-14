@@ -111,7 +111,7 @@ def run_eye_blinking():
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
             cv2.putText(frame, "Eye_aspect: {:.2f}".format(ear), (250, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(frame, "Human: {}".format(str(human)), (300, 60),
+            cv2.putText(frame, "Human: {}".format(str(human)), (290, 60),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
     
         cv2.imshow("Frame", frame)
