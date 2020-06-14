@@ -20,7 +20,7 @@ net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 def liveliness_detector():
 
     print("[INFO] loading liveness detector...")
-    model = load_model("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/livenessRasmus2.model")
+    model = load_model("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/livenessRasmus4.model")
     le = pickle.loads(open("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/le.pickle", "rb").read())
 
     print("[INFO] starting video stream...")

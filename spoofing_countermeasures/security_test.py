@@ -7,24 +7,12 @@ import imutils
 import pickle
 import time
 import cv2
-import os
 import copyreg
-
 from scipy.spatial import distance as dist
 from imutils.video import FileVideoStream
-from imutils.video import VideoStream
 from imutils import face_utils
-import numpy as np
-import argparse
-import imutils
-import time
 import dlib
-import cv2
-import os
-import os.path
 import threading
-
-import cv2
 import os, os.path
 import tkinter as tk
 from tkinter import simpledialog
@@ -37,10 +25,10 @@ anti_spoofing_challenge = False
 
 label = False
 
-count = 0
 stop_thread = False
+count = 0
 
-EYE_AR_THRESH = 0.2
+EYE_AR_THRESH = 0.3
 EYE_AR_CONSEC_FRAMES = 3
 
 COUNTER = 0
@@ -53,7 +41,6 @@ modelPath = "C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_counter
 net = cv2.dnn.readNetFromCaffe(protoPath, modelPath)
 
 cv2dir = str(os.path.dirname(cv2.__file__))
-
 face_cascade_path = f"{cv2dir}/data/haarcascade_frontalface_default.xml"
 left_eye_cascade_path = f"{cv2dir}/data/haarcascade_lefteye_2splits.xml"
 right_eye_cascade_path = f"{cv2dir}/data/haarcascade_righteye_2splits.xml"
@@ -70,7 +57,7 @@ def liveliness_detector():
     global stop_thread
 
     print("[INFO] loading liveness detector...")
-    model = load_model("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/livenessRasmus2.model")
+    model = load_model("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/livenessRasmus4.model")
     le = pickle.loads(open("C:/Users/rasmu/Desktop/Face_recog_project-Security/spoofing_countermeasures/liveness/le.pickle", "rb").read())
 
 
@@ -91,11 +78,11 @@ def liveliness_detector():
         frame = vs.read()
         frame = imutils.resize(frame, width=600)
 
-        anti_spoofing_liveness(frame,model,le)
-
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         rects = detector(gray, 0)
         anti_spoofing_eye(frame, rects, gray, predictor)
+
+        anti_spoofing_liveness(frame, model, le)
 
         anti_spoofing_challenge_def(gray, frame)
 
@@ -219,8 +206,6 @@ def anti_spoofing_eye(frame, rects, gray, predictor):
 
             leftEyeHull = cv2.convexHull(leftEye)
             rightEyeHull = cv2.convexHull(rightEye)
-            cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-            cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
             if ear < EYE_AR_THRESH:
                 COUNTER += 1

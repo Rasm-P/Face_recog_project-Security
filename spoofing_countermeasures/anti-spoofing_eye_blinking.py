@@ -16,7 +16,7 @@ count = 0
 stop_thread = False
 human = False  
 
-EYE_AR_THRESH = 0.2
+EYE_AR_THRESH = 0.3
 EYE_AR_CONSEC_FRAMES = 3
 
 COUNTER = 0
