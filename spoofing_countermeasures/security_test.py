@@ -28,7 +28,7 @@ label = False
 stop_thread = False
 count = 0
 
-EYE_AR_THRESH = 0.3
+EYE_AR_THRESH = 0.27
 EYE_AR_CONSEC_FRAMES = 3
 
 COUNTER = 0
@@ -67,7 +67,8 @@ def liveliness_detector():
 
 
     print("[INFO] starting video stream...")
-    vs = VideoStream(src=0).start()
+    #vs = VideoStream(src=0).start()
+    vs = cv2.VideoCapture("C:/Users/rasmu/Desktop/WIN_20200622_13_07_26_Pro.mp4")
     time.sleep(1.0)
 
     printit()
@@ -75,38 +76,43 @@ def liveliness_detector():
 
     while True:
 
-        frame = vs.read()
-        frame = imutils.resize(frame, width=600)
+        ret,frame = vs.read()
+        if ret:
+            frame = imutils.resize(frame, width=600)
 
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        rects = detector(gray, 0)
-        anti_spoofing_eye(frame, rects, gray, predictor)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            rects = detector(gray, 0)
+            anti_spoofing_eye(frame, rects, gray, predictor)
 
-        anti_spoofing_liveness(frame, model, le)
+            anti_spoofing_liveness(frame, model, le)
 
-        anti_spoofing_challenge_def(gray, frame)
+            anti_spoofing_challenge_def(gray, frame)
 
-        cv2.putText(frame, "CNN: {}".format(str(anti_spoofing_cnn)), (430, 30),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        cv2.putText(frame, "Eye: {}".format(str(anti_spoofing_eye_blink)), (430, 60),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-        cv2.putText(frame, "Cha: {}".format(str(anti_spoofing_challenge)), (430, 90),
-            cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(frame, "CNN: {}".format(str(anti_spoofing_cnn)), (430, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(frame, "Eye: {}".format(str(anti_spoofing_eye_blink)), (430, 60),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+            cv2.putText(frame, "Cha: {}".format(str(anti_spoofing_challenge)), (430, 90),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
 
-        if (anti_spoofing_cnn) & (anti_spoofing_eye_blink) & (anti_spoofing_challenge):
-            label = True
+            if (anti_spoofing_cnn) & (anti_spoofing_eye_blink) & (anti_spoofing_challenge):
+                label = True
+            else:
+                label = False
+
+            cv2.imshow("Frame", frame)
+            key = cv2.waitKey(1) & 0xFF
+
+            if key == ord("q"):
+                stop_thread = True
+                break
+
         else:
-            label = False
-
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
-
-        if key == ord("q"):
             stop_thread = True
             break
 
+    vs.release()
     cv2.destroyAllWindows()
-    vs.stop()
 
 
 def anti_spoofing_liveness(frame,model,le):
@@ -227,13 +233,13 @@ def anti_spoofing_challenge_def(gray, frame):
         roi_color = frame[y:y+h, x:x+w]  
         cv2.rectangle(frame, (x,y), (x+w,y+h), (0, 255, 0), 2)
 
-        left_eye = left_eye_cascade.detectMultiScale(roi_gray, 1.07, 22)
+        left_eye = left_eye_cascade.detectMultiScale(roi_gray, 1.07, 70)
  
 
-        right_eye = right_eye_cascade.detectMultiScale(roi_gray, 1.07, 22)
+        right_eye = right_eye_cascade.detectMultiScale(roi_gray, 1.07, 70)
 
 
-        smile = smile_cascade.detectMultiScale(roi_gray, 1.3, 30)
+        smile = smile_cascade.detectMultiScale(roi_gray, 1.07, 70)
 
 
         if (len(left_eye) != 0) & (len(right_eye) != 0) & (len(smile) != 0):

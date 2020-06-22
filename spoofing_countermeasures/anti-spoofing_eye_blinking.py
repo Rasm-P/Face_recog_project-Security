@@ -16,7 +16,7 @@ count = 0
 stop_thread = False
 human = False  
 
-EYE_AR_THRESH = 0.3
+EYE_AR_THRESH = 0.27
 EYE_AR_CONSEC_FRAMES = 3
 
 COUNTER = 0
@@ -67,62 +67,68 @@ def run_eye_blinking():
     (rStart, rEnd) = face_utils.FACIAL_LANDMARKS_IDXS["right_eye"]
 
     print("[INFO] starting video stream...")
-    vs = VideoStream(src=0).start()
+    #vs = VideoStream(src=0).start()
+    vs = cv2.VideoCapture("C:/Users/rasmu/Desktop/WIN_20200622_13_07_26_Pro.mp4")
     time.sleep(1.0)
 
     printit()
 
     while True:
 
-        frame = vs.read()
-        frame = imutils.resize(frame, width=450)
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        ret,frame = vs.read()
+        if ret:
+            frame = imutils.resize(frame, width=450)
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        rects = detector(gray, 0)
+            rects = detector(gray, 0)
 
-        for rect in rects:
+            for rect in rects:
 
-            shape = predictor(gray, rect)
-            shape = face_utils.shape_to_np(shape)
+                shape = predictor(gray, rect)
+                shape = face_utils.shape_to_np(shape)
 
-            leftEye = shape[lStart:lEnd]
-            rightEye = shape[rStart:rEnd]
-            leftEAR = eye_aspect_ratio(leftEye)
-            rightEAR = eye_aspect_ratio(rightEye)
+                leftEye = shape[lStart:lEnd]
+                rightEye = shape[rStart:rEnd]
+                leftEAR = eye_aspect_ratio(leftEye)
+                rightEAR = eye_aspect_ratio(rightEye)
 
-            ear = (leftEAR + rightEAR) / 2.0
+                ear = (leftEAR + rightEAR) / 2.0
 
-            leftEyeHull = cv2.convexHull(leftEye)
-            rightEyeHull = cv2.convexHull(rightEye)
-            cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
-            cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
+                leftEyeHull = cv2.convexHull(leftEye)
+                rightEyeHull = cv2.convexHull(rightEye)
+                cv2.drawContours(frame, [leftEyeHull], -1, (0, 255, 0), 1)
+                cv2.drawContours(frame, [rightEyeHull], -1, (0, 255, 0), 1)
 
-            if ear < EYE_AR_THRESH:
-                COUNTER += 1
+                if ear < EYE_AR_THRESH:
+                    COUNTER += 1
 
-            else:
+                else:
 
-                if COUNTER >= EYE_AR_CONSEC_FRAMES:
-                    TOTAL += 1
+                    if COUNTER >= EYE_AR_CONSEC_FRAMES:
+                        TOTAL += 1
 
-                COUNTER = 0
+                    COUNTER = 0
 
-            cv2.putText(frame, "Blinks: {}".format(TOTAL), (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(frame, "Eye_aspect: {:.2f}".format(ear), (250, 30),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-            cv2.putText(frame, "Human: {}".format(str(human)), (290, 60),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
-    
-        cv2.imshow("Frame", frame)
-        key = cv2.waitKey(1) & 0xFF
-    
-        if key == ord("q"):
+                cv2.putText(frame, "Blinks: {}".format(TOTAL), (10, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                cv2.putText(frame, "Eye_aspect: {:.2f}".format(ear), (250, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+                cv2.putText(frame, "Human: {}".format(str(human)), (290, 60),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2)
+        
+            cv2.imshow("Frame", frame)
+            key = cv2.waitKey(25) & 0xFF
+        
+            if key == ord("q"):
+                stop_thread = True
+                break
+        
+        else:
             stop_thread = True
             break
 
+    vs.release()
     cv2.destroyAllWindows()
-    vs.stop()
 
 
 if __name__ == "__main__":

@@ -20,7 +20,8 @@ smile_cascade = cv2.CascadeClassifier(smile_cascade_path)
 
 
 def execute_tracking():   
-    cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+    #cam = cv2.VideoCapture(0,cv2.CAP_DSHOW)
+    cam = cv2.VideoCapture("C:/Users/rasmu/Desktop/WIN_20200622_13_07_26_Pro.mp4")
     time.sleep(1.0)
 
     while True:
@@ -29,7 +30,8 @@ def execute_tracking():
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
             canvas = detect(gray,frame)
             cv2.imshow('Face recognition',canvas)
-            if cv2.waitKey(1) & 0xFF==ord('q'):
+            key = cv2.waitKey(20) & 0xFF
+            if key == ord("q"):
                 break
         else:
             break
@@ -47,20 +49,23 @@ def detect(gray, frame):
         roi_color = frame[y:y+h, x:x+w]  
         cv2.rectangle(frame, (x,y), (x+w,y+h), (0, 255, 0), 2)
 
-        left_eye = left_eye_cascade.detectMultiScale(roi_gray, 1.07, 22)
+        left_eye = left_eye_cascade.detectMultiScale(roi_gray, 1.07, 70)
         print("left_eye: ", left_eye)
         for (ex,ey,ew,eh) in left_eye:
             cv2.rectangle(roi_color, (ex,ey), (ex+ew, ey+eh),(0, 0, 255), 1)
-
-        right_eye = right_eye_cascade.detectMultiScale(roi_gray, 1.07, 22)
+            break
+            
+        right_eye = right_eye_cascade.detectMultiScale(roi_gray, 1.07, 70)
         print("right_eye: ", right_eye)
-        for (ex,ey,ew,eh) in left_eye:
+        for (ex,ey,ew,eh) in right_eye:
             cv2.rectangle(roi_color, (ex,ey), (ex+ew, ey+eh),(0, 0, 255), 1)
-
-        smile = smile_cascade.detectMultiScale(roi_gray, 1.3, 30)
+            break
+            
+        smile = smile_cascade.detectMultiScale(roi_gray, 1.2, 80)
         print("smile: ", smile)
         for (xs,ys,ws,hs) in smile:
             cv2.rectangle(roi_color, (xs,ys), (xs+ws, ys+hs),(255, 0, 0), 1)
+            break
 
         if (len(left_eye) != 0) & (len(right_eye) != 0) & (len(smile) != 0):
             label = True
