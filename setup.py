@@ -17,7 +17,7 @@ setup(
         'scipy == 1.4.1',
         'keras == 2.3.1',
         'h5py == 2.10.0',
-        'tensorflow == 2.2.0',
+        'tensorflow == 2.3.1',
         'imutils == 0.5.3',
         'dlib == 19.19.0',
         'keyboard == 0.13.5'
